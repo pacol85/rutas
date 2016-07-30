@@ -1,0 +1,66 @@
+<div class="page-header">
+    <h1>Vendedor por Ruta</h1>
+</div>
+<?php 
+$mensaje = $this->session->get("mensaje");
+$limpiar = $this->session->get("clear");
+
+echo $this->tag->form("vpr/mod");
+$rutaId = "";
+if(isset($_GET["rid"])){
+	$rutaId = $_GET["rid"];
+}
+
+if(!($rutaId == null || $rutaId =="")){
+	$this->session->set("srid", $rutaId);
+}else{
+	if($this->session->has("srid")){
+		$rutaId = $this->session->get("srid");
+	}else{
+		$this->session->set("mensaje", "No se encontr&oacute; la sesi&oacute;n solicitada");
+	}
+}
+echo $this->tag->hiddenField(array("rid2", "value" => $rutaId)); 
+echo $mensaje;
+?>
+<br>
+<script type="text/javascript" language="javascript" class="init">
+	$(document).ready(function() {
+		$('#vpr').DataTable();
+	} );
+</script>
+<div id="tdiv" style="font-size:1.5em;">
+<table id="vpr" class="display" cellspacing="0" width="100%" >
+<thead><tr>
+	<th>C&oacute;digo</th>
+	<th>Nombre</th>
+	<th>Apellido</th>
+	<th>Asociaci&oacute;n</th>
+</tr></thead>
+<tbody>
+<?php
+	
+	//$vpr = CrVendedorRuta::find("ru_id = $rutaId");
+	$userList = CrUsuario::find();
+	foreach ($userList as $user){
+		echo "<tr>";
+		echo "<td>$user->u_codigo</td>";
+		echo "<td>$user->u_nombre</td>";
+		echo "<td>$user->u_apellido</td>";
+		$vpr = CrVendedorRuta::find("ru_id = $rutaId and u_id = $user->u_codigo");
+		echo "<td>";
+		if(sizeof($vpr) > 0){
+			echo $this->tag->checkField(array("asoc[]", "value" => "$user->u_codigo", "checked"=>""));
+		}else{
+			echo $this->tag->checkField(array("asoc[]", "value" => "$user->u_codigo"));
+		}
+		echo "</td>";
+		echo "</tr>";
+	}
+?>
+</tbody>
+</table>
+
+</div>
+<?php echo $this->tag->submitButton("Guardar Cambios") ?>
+</form>

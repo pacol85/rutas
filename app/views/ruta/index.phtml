@@ -1,0 +1,94 @@
+<div class="page-header">
+    <h1>Rutas</h1>
+</div>
+<?php 
+$mensaje = $this->session->get("mensaje");
+$limpiar = $this->session->get("clear");
+if($limpiar == 1){
+	echo '<script type="text/javascript">
+$( document ).ready(function() {
+	document.getElementById("ruId").value = "";
+	document.getElementById("ruNombre").value = "";
+	document.getElementById("ruDescripcion").value = "";	
+});
+</script>'; 
+	
+}
+
+echo $this->tag->form(
+		array(
+				"ruta/nuevo",
+				"autocomplete" => "off",
+				"class" => "form-horizontal"
+		)
+);
+?>
+
+<div class="form-group">
+    <label for="ruId" class="col-sm-2 control-label">ID</label>
+    <div class="col-sm-10">
+    	<?php echo $this->tag->textField(array("ruId", "size" => 30, "class" => "form-control", "id" => "ruId")) ?>
+    </div>
+</div>
+<div class="form-group">
+    <label for="ruNombre" class="col-sm-2 control-label">Nombre</label>
+    <div class="col-sm-10">
+    	<?php echo $this->tag->textField(array("ruNombre", "size" => 30, "class" => "form-control", "id" => "ruNombre")) ?>
+    </div>
+</div>
+<div class="form-group">
+    <label for="ruDescripcion" class="col-sm-2 control-label">Descripci&oacute;n</label>
+    <div class="col-sm-10">
+    	<?php echo $this->tag->textField(array("ruDescripcion", "size" => 30, "class" => "form-control", "id" => "ruDescripcion")) ?>
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-sm-12" align="center">
+        <?php echo $this->tag->submitButton(array("Agregar", "class" => "btn btn-default")); ?>
+    </div>
+</div>
+<?php echo $this->tag->endForm(); ?>
+<br>
+<script type="text/javascript" language="javascript" class="init">
+	$(document).ready(function() {
+		$('#rutas').DataTable();
+	} );
+</script>
+<div id="tdiv">
+<table id="rutas" class="display" cellspacing="0">
+<thead><tr>
+	<th>ID</th>
+	<th>Nombre</th>
+	<th>Descripci&oacute;n</th>
+	<th>Creaci&oacute;n</th>
+	<th>Vendedor/es</th>
+</tr></thead>
+<tbody>
+<?php
+	$rutaList = CrRuta::find();
+	//$vxp = CrVendedorRuta::find();
+	//$clientes = CrClientes::find();
+	foreach ($rutaList as $ruta){
+		echo "<tr>";
+		echo "<td>$ruta->ru_id</td>";
+		echo "<td>$ruta->ru_nombre</td>";
+		echo "<td>$ruta->ru_descripcion</td>";
+		echo "<td>$ruta->ru_creacion</td>";
+		
+		$vxp = CrVendedorRuta::find("ru_id = $ruta->ru_id");
+		if(sizeof($vxp) < 1){
+			echo "<td><a href='vpr/index?rid=$ruta->ru_id'>Agrega Vendedor</a></td>";
+		}else{
+			echo "<td>";
+			foreach ($vxp as $vxp2){
+				$ven = CrUsuario::findFirst($vxp2->u_id);
+				echo "$ven->u_nombre | ";
+			}
+			echo "<a href='vpr/index?rid=$ruta->ru_id'>Agrega Vendedor</a></td>";			
+		}
+		echo "</tr>";
+	}
+?>
+</tbody>
+</table>
+</div>

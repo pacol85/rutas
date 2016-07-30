@@ -1,0 +1,97 @@
+<div class="page-header">
+    <h1>Usuarios / Vendedores</h1>
+</div>
+<?php 
+//$mensaje = $this->session->get("mensaje");
+$limpiar = $this->session->get("clear");
+if($limpiar == 1){
+	echo '<script type="text/javascript">
+$( document ).ready(function() {
+	document.getElementById("uNombre").value = "";
+	document.getElementById("uApellido").value = "";
+	document.getElementById("uCodigo").value = "";
+	document.getElementById("uPass").value = "";
+	document.getElementById("uPass2").value = "";
+});
+</script>'; 
+	
+}
+
+echo $this->tag->form(
+		array(
+				"usuarios/nuevo",
+				"autocomplete" => "off",
+				"class" => "form-horizontal"
+		)
+);
+?>
+
+<div class="form-group">
+    <label for="uNombre" class="col-sm-2 control-label">Nombre</label>
+    <div class="col-sm-10">
+    	<?php echo $this->tag->textField(array("uNombre", "size" => 30, "class" => "form-control", "id" => "uNombre")) ?>
+    </div>
+</div>
+<div class="form-group">
+    <label for="uApellido" class="col-sm-2 control-label">Apellido</label>
+    <div class="col-sm-10">
+    	<?php echo $this->tag->textField(array("uApellido", "size" => 30, "class" => "form-control", "id" => "uApellido")) ?>
+    </div>
+</div>
+<div class="form-group">
+    <label for="uCodigo" class="col-sm-2 control-label">C&oacute;digo</label>
+    <div class="col-sm-10">
+    	<?php echo $this->tag->textField(array("uCodigo", "size" => 30, "class" => "form-control", "id" => "uCodigo")) ?>
+    </div>
+</div>
+<div class="form-group">
+    <label for="uPass" class="col-sm-2 control-label">Contrase&ntilde;a</label>
+    <div class="col-sm-10">
+    	<?php echo $this->tag->passwordField(array("uPass", "size" => 30, "class" => "form-control", "id" => "uPass")) ?>
+    </div>
+</div>
+<div class="form-group">
+    <label for="uPass2" class="col-sm-2 control-label">Repita Contrase&ntilde;a</label>
+    <div class="col-sm-10">
+    	<?php echo $this->tag->passwordField(array("uPass2", "size" => 30, "class" => "form-control", "id" => "uPass2"));
+    		echo $this->tag->hiddenField(array("activo", "value" => 1)); ?>
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-sm-12" align="center">
+        <?php echo $this->tag->submitButton(array("Agregar", "class" => "btn btn-default")); ?>
+    </div>
+</div>
+<?php echo $this->tag->endForm(); ?>
+<br>
+<script type="text/javascript" language="javascript" class="init">
+	$(document).ready(function() {
+		$('#usuarios').DataTable();
+	} );
+</script>
+<div id="tdiv">
+<table id="usuarios" class="display" cellspacing="0">
+<thead><tr>
+	<th>C&oacute;digo</th>
+	<th>Nombre</th>
+	<th>Apellido</th>
+	<th>Creaci&oacute;n</th>
+	<th>Acciones</th>
+</tr></thead>
+<tbody>
+<?php
+	$userList = CrUsuario::find();
+	foreach ($userList as $user){
+		echo "<tr>";
+		echo "<td>$user->u_codigo</td>";
+		echo "<td>$user->u_nombre</td>";
+		echo "<td>$user->u_apellido</td>";
+		echo "<td>$user->u_fcreacion</td>";
+		echo "<td><a onClick=\"cargaDatos($user->u_codigo, '".$user->u_nombre."', '".$user->u_apellido."');\">Editar</a> |";
+		echo "<a onClick='deshabilita($user->u_codigo);'>Deshabilitar</a></td>";
+		echo "</tr>";
+	}
+?>
+</tbody>
+</table>
+</div>

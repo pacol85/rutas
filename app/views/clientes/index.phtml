@@ -1,0 +1,105 @@
+<?php 
+$mensaje = $this->session->get("mensaje");
+$limpiar = $this->session->get("clear");
+if($limpiar == 1){
+	echo '<script type="text/javascript">
+$( document ).ready(function() {
+	document.getElementById("clNombre").value = "";
+	document.getElementById("clComentarios").value = "";
+	document.getElementById("clCodigo").value = "";
+	document.getElementById("clSaldoIni").value = "";	
+});
+</script>'; 
+	
+}
+?>
+
+<div class="page-header">
+    <h1>
+        Clientes
+    </h1>
+</div>
+
+<?php echo $this->getContent(); ?>
+
+<?php
+    echo $this->tag->form(
+        array(
+            "clientes/nuevo",
+            "autocomplete" => "on",
+            "class" => "form-horizontal"
+        )
+    );
+?>
+<div class="form-group">
+    <label for="clNombre" class="col-sm-2 control-label">Nombre (y apellido)</label>
+    <div class="col-sm-10">
+        <?php echo $this->tag->textField(array("clNombre", "size" => 30, "class" => "form-control", "id" => "clNombre")) ?>
+    </div>
+</div>    
+<div class="form-group">
+    <label for="clCodigo" class="col-sm-2 control-label">C&oacute;digo</label>
+    <div class="col-sm-10">
+        <?php echo $this->tag->textField(array("clCodigo", "size" => 30, "class" => "form-control", "id" => "clCodigo")) ?>
+    </div>
+</div>    
+<div class="form-group">
+    <label for="clComentarios" class="col-sm-2 control-label">Comentario</label>
+    <div class="col-sm-10">
+        <?php echo $this->tag->textField(array("clComentarios", "size" => 30, "class" => "form-control", "id" => "clComentarios")) ?>
+    </div>
+</div>    
+<div class="form-group">
+    <label for="clSaldoIni" class="col-sm-2 control-label">Saldo Inicial</label>
+    <div class="col-sm-10">
+        <?php echo $this->tag->textField(array("clSaldoIni", "size" => 30, "class" => "form-control", "id" => "clSaldoIni")) ?>
+    </div>
+</div>    
+<div class="form-group">
+    <div class="col-sm-12" align="center">
+        <?php echo $this->tag->submitButton(array("Agregar", "class" => "btn btn-default")) ?>
+    </div>
+</div>
+<?php echo $this->tag->endForm(); ?>
+<br>
+<script type="text/javascript" language="javascript" class="init">
+	$(document).ready(function() {
+		$('#clientes').DataTable();
+	} );
+</script>
+<div id="tdiv" style="font-size:1.2em;">
+<table id="clientes" class="display" cellspacing="0" width="100%" >
+<thead><tr>
+	<th>C&oacute;digo</th>
+	<th>Nombre</th>
+	<th>Comentarios</th>
+	<th>Saldo</th>
+	<th>Creaci&oacute;n</th>
+	<th>Direcciones</th>
+</tr></thead>
+<tbody>
+<?php
+	$clientesList = CrClientes::find();
+			
+	foreach ($clientesList as $cliente){
+		echo "<tr>";
+		echo "<td>$cliente->cl_codigo</td>";
+		echo "<td>$cliente->cl_nombre</td>";
+		echo "<td>$cliente->cl_comentarios</td>";
+		if($cliente->cl_saldo == 0){
+			echo "<td>$ ".number_format($cliente->cl_saldoini, 2)."</td>";
+		}else{
+			echo "<td>$ ".number_format($cliente->cl_saldo, 2)."</td>";
+		}				
+		echo "<td>$cliente->cl_creacion</td><td>";		
+		$address = CrDirecciones::find(array("di_cliente = ".$cliente->cl_codigo, "order"=>"di_orden"));
+		foreach ($address as $a){
+			echo $a->di_direccion."<br>";
+		}
+		echo "<a href='direccion/index?cli=$cliente->cl_codigo'>Agrega Direcci&oacute;n</a></td>";
+		echo "</tr>";
+	}
+?>
+</tbody>
+</table>
+</div>

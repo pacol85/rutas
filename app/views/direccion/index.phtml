@@ -1,0 +1,149 @@
+<script type="text/javascript">
+$( document ).ready(function() {
+	$('.edit').hide();
+});
+
+function cargaDatos(did, ddir, du, dotro, dru){
+	//alert(did + " " + ddir + " " + dru);
+	$('#direccion').val(ddir);
+	$('#ubicacion').val(du);
+	$('#ruta').val(dru);
+	$('#otros').val(dotro);
+	$('#did').val(did);
+	$('.main').hide();
+	$('.edit').show();	
+}
+
+function elimina(did){
+	$('#dirid').val(did);
+	$('#delForm').submit();
+	/*$.ajax({
+		type: "POST",
+		url: "direccion/delDir", 
+		data: {dirid: did},
+		dataType: "json",
+		success: function(){
+			alert("regreso");
+			window.location.reload();			
+		}				
+	});*/
+}
+
+function guardarCambio(){
+	$('#form1').attr('action', "/rutas/direccion/editar");
+	$('#form1').submit();
+}
+
+function cancelar(){
+	$('#direccion').val("");
+	$('#ubicacion').val("");
+	$('#otros').val("");
+	$('#did').val("");
+	$('.main').show();
+	$('.edit').hide();
+}
+</script>
+<?php
+echo $this->tag->form(
+		array(
+				"direccion/nueva",
+				"autocomplete" => "off",
+				"class" => "form-horizontal",
+				"id" => "form1"
+		)
+); 
+if($this->session->has("cli")){
+	$cliente = $this->session->get("cli");
+	$client = CrClientes::findFirst("cl_codigo = $cliente");
+	echo $this->tag->hiddenField(array("cid", "id" => "cid", "value" => "$cliente"));
+	echo $this->tag->hiddenField(array("did", "id" => "did"));
+}
+?>
+<div class="page-header">
+    <h1>Direcciones para Cliente: <?php echo $client->cl_nombre?></h1>
+</div>
+<?php echo $this->getContent(); ?>
+<div class="form-group">
+    <label for="direccion" class="col-sm-2 control-label">Direcci&oacute;n</label>
+    <div class="col-sm-10">
+        <?php echo $this->tag->textField(array("direccion", "size" => 30, "class" => "form-control", "id" => "direccion")) ?>
+    </div>
+</div>    
+<div class="form-group">
+    <label for="ubicacion" class="col-sm-2 control-label">Ubicaci&oacute;n</label>
+    <div class="col-sm-10">
+        <?php echo $this->tag->textField(array("ubicacion", "size" => 30, "class" => "form-control", "id" => "ubicacion")) ?>
+    </div>
+</div>    
+<div class="form-group">
+    <label for="ruta" class="col-sm-2 control-label">Ruta</label>
+    <div class="col-sm-10">
+        <?php echo $this->tag->select(array("ruta",
+		    CrRuta::find(),
+		    "using" => array("ru_id", "ru_nombre"), "class" => "form-control", "id" => "ruta")) ?>
+    </div>
+</div>    
+<div class="form-group">
+    <label for="otros" class="col-sm-2 control-label">Otros</label>
+    <div class="col-sm-10">
+        <?php echo $this->tag->textField(array("otros", "size" => 30, "class" => "form-control", "id" => "otros")) ?>
+    </div>
+</div>    
+<div class="form-group main">
+    <div class="col-sm-12" align="center">
+        <?php echo $this->tag->submitButton(array("Agrega Direccion", "class" => "btn btn-default")); ?>
+    </div>
+</div>
+<?php echo $this->tag->endForm(); ?>
+<div class="form-group edit">
+    <div class="col-sm-12" align="center">
+        <button class="btn btn-default" id="edit" name="edit" onclick="guardarCambio();">Editar</button>
+		<button class="btn btn-default" id="cancel" name="cancel" onclick="cancelar();">Cancelar</button>        
+    </div>
+</div>
+<br>
+<?php 
+echo $this->tag->form(
+		array(
+				"direccion/delDir",
+				"autocomplete" => "off",
+				"class" => "form-horizontal",
+				"id" => "delForm"
+		)
+);
+?>
+<script type="text/javascript" language="javascript" class="init">
+	$(document).ready(function() {
+		$('#dir').DataTable();
+	} );
+</script>
+<div id="tdiv">
+<table id="dir" class="display" cellspacing="0" >
+<thead><tr>
+	<th>Direcci&oacute;n</th>
+	<th>Ubicaci&oacute;n</th>
+	<th>Otros</th>
+	<th>Ruta</th>
+	<th>Acciones</th>
+</tr></thead>
+<tbody>
+<?php	
+	$dirList = CrDirecciones::find(array("di_cliente = $client->cl_codigo", "order by" => "di_ruta"));
+	foreach ($dirList as $dir){
+		echo "<tr>";
+		echo "<td>$dir->di_direccion</td>";
+		echo "<td>$dir->di_ubicacion</td>";
+		echo "<td>$dir->di_otros</td>";
+		$ruta = CrRuta::findFirst("ru_id = $dir->di_ruta");
+		echo "<td>$ruta->ru_nombre</td>";
+		echo "<td><a onClick=\"cargaDatos($dir->di_id, '".$dir->di_direccion."', '".$dir->di_ubicacion."', '".$dir->di_otros."', $dir->di_ruta);\">Editar</a> |"; 
+		echo "<a onClick='elimina($dir->di_id);'>Eliminar</a></td>";
+		echo "</tr>";
+	}
+?>
+</tbody>
+</table>
+<?php 
+echo $this->tag->hiddenField(array("dirid", "id" => "dirid"));
+echo $this->tag->endForm(); 
+?>

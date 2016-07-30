@@ -1,0 +1,12 @@
+<?php 
+	$usuario = $this->session->get("usuario");
+	$user = CrUsuario::findFirst($usuario); 
+	echo "<h1>Bienvenido/a $user->u_nombre $user->u_apellido</h1>";
+?>
+<script type="text/javascript">
+$( document ).ready(function() {
+	$('.datepicker').pickadate();
+});
+//<input type="text" class="datepicker"></input>
+</script>
+

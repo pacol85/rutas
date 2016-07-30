@@ -1,0 +1,67 @@
+<?php 
+use Phalcon\Registry;
+
+$registry = new \Phalcon\Registry();
+//$registry->tablaString = ''; 
+?>
+<div class="page-header">
+    <h1>Agregar Productos y Colores</h1>
+</div>
+<?php echo $this->tag->form(array("existencia/subir",  'enctype' => 'multipart/form-data')); ?>
+
+<table>
+<tbody>
+<tr>
+	<td>Archivo</td>
+	<td><?php echo $this->tag->fileField("archivo") ?></td>
+</tr>
+<tr>
+	<td colspan="2"><?php echo $this->tag->submitButton("Subir") ?></td>
+</tr>
+</tbody>
+</table>
+
+</form>
+<br>
+<script type="text/javascript" language="javascript" class="init">
+	$(document).ready(function() {
+		$('#cxp').DataTable();
+	} );
+</script>
+<h2>Productos no modificados en un mes o m&aacute;s</h2>
+<div id="tdiv" style="font-size:1em;">
+<table id="cxp" class="display" cellspacing="0" width="80%" >
+<thead><tr>
+	<th>C&oacute;digo Producto</th>
+	<th>C&oacute;digo Color</th>
+	<th>Existencia</th>
+	<th>Modificacion</th>
+</tr></thead>
+<tbody>
+<?php
+	
+	$hoy = restarDias(date("Y-m-d H:i:s"), 30);
+	$cxpList = CrColorXProducto::find("cp_creacion <= '$hoy'");
+	foreach ($cxpList as $cxp){
+		echo "<tr>";
+		echo "<td>$cxp->pr_codigo</td>";
+		echo "<td>$cxp->co_codigo</td>";
+		if($cxp->cp_existencia == 1){
+			echo "<td>Hay</td>";
+		}else{
+			echo "<td>No hay</td>";
+		}		
+		echo "<td>$cxp->cp_creacion</td>";
+		echo "</tr>";
+	}
+	
+	function restarDias($date,$days){
+	
+		$date = strtotime("-".$days." days", strtotime($date));
+		return  date("Y-m-d H:i:s", $date);
+	
+	}
+?>
+</tbody>
+</table>
+</div>
