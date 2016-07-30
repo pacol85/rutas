@@ -16,7 +16,7 @@ $( document ).ready(function() {
 </script>'; 
 	
 }
-
+echo $this->getContent();
 echo $this->tag->form(
 		array(
 				"usuarios/nuevo",
@@ -24,6 +24,7 @@ echo $this->tag->form(
 				"class" => "form-horizontal"
 		)
 );
+
 ?>
 
 <div class="form-group">
@@ -88,7 +89,11 @@ echo $this->tag->form(
 		echo "<td>$user->u_apellido</td>";
 		echo "<td>$user->u_fcreacion</td>";
 		echo "<td><a onClick=\"cargaDatos($user->u_codigo, '".$user->u_nombre."', '".$user->u_apellido."');\">Editar</a> |";
-		echo "<a onClick='deshabilita($user->u_codigo);'>Deshabilitar</a></td>";
+		if($user->u_activo == 1){
+			echo "<a href='usuarios/deshabilitar?uid=".$user->u_codigo."&d=1'>Deshabilitar</a></td>";
+		}else{
+			echo "<a href='usuarios/deshabilitar?uid=".$user->u_codigo."&d=0'>Habilitar</a></td>";
+		}		
 		echo "</tr>";
 	}
 ?>

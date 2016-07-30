@@ -42,4 +42,28 @@ class UsuariosController extends ControllerBase {
     		);
 		
 	}
+	
+	public function deshabilitarAction(){
+		$user = CrUsuario::findFirst($this->request->get("uid"));
+		if($this->request->get("d") == 1){
+			$user->u_activo = 0;
+			$user->u_feliminacion = parent::fechaHoy(true);
+		}else{
+			$user->u_activo = 1;
+			$user->u_feliminacion = null;
+		}
+		
+		if($user->save()){
+			$this->flash->success("Usuario: $user->u_nombre $user->u_apellido, ha sido procesado exitosamente");
+		}else{
+			$this->flash->error("Ocurri&oacute; un error al realizar la solicitud");
+		}
+		return $this->dispatcher->forward(
+				array(
+						"controller" => "usuarios",
+						"action"     => "index"
+				)
+		);
+		
+	}
 }
