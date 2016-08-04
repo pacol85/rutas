@@ -3,10 +3,13 @@
 	$user = CrUsuario::findFirst($usuario); 
 	echo "<h1>Bienvenido/a $user->u_nombre $user->u_apellido</h1>";
 ?>
-<script type="text/javascript">
-$( document ).ready(function() {
-	$('.datepicker').pickadate();
-});
-//<input type="text" class="datepicker"></input>
+
+
+<script type="text/babel" src="reactFiles/forms.js">
+ReactDOM.render(
+  <Titulo t="Par&aacute;metros del Sistema" />,
+  document.getElementById('titulo')
+);
 </script>
+<div id="titulo"></div>
 
