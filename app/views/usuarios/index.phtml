@@ -24,40 +24,9 @@ echo $this->tag->form(
 				"class" => "form-horizontal"
 		)
 );
+echo $this->view->elem;
 
 ?>
-
-<div class="form-group">
-    <label for="uNombre" class="col-sm-2 control-label">Nombre</label>
-    <div class="col-sm-10">
-    	<?php echo $this->tag->textField(array("uNombre", "size" => 30, "class" => "form-control", "id" => "uNombre")) ?>
-    </div>
-</div>
-<div class="form-group">
-    <label for="uApellido" class="col-sm-2 control-label">Apellido</label>
-    <div class="col-sm-10">
-    	<?php echo $this->tag->textField(array("uApellido", "size" => 30, "class" => "form-control", "id" => "uApellido")) ?>
-    </div>
-</div>
-<div class="form-group">
-    <label for="uCodigo" class="col-sm-2 control-label">C&oacute;digo</label>
-    <div class="col-sm-10">
-    	<?php echo $this->tag->textField(array("uCodigo", "size" => 30, "class" => "form-control", "id" => "uCodigo")) ?>
-    </div>
-</div>
-<div class="form-group">
-    <label for="uPass" class="col-sm-2 control-label">Contrase&ntilde;a</label>
-    <div class="col-sm-10">
-    	<?php echo $this->tag->passwordField(array("uPass", "size" => 30, "class" => "form-control", "id" => "uPass")) ?>
-    </div>
-</div>
-<div class="form-group">
-    <label for="uPass2" class="col-sm-2 control-label">Repita Contrase&ntilde;a</label>
-    <div class="col-sm-10">
-    	<?php echo $this->tag->passwordField(array("uPass2", "size" => 30, "class" => "form-control", "id" => "uPass2"));
-    		echo $this->tag->hiddenField(array("activo", "value" => 1)); ?>
-    </div>
-</div>
 <div class="form-group">
     <div class="col-sm-12" align="center">
         <?php echo $this->tag->submitButton(array("Agregar", "class" => "btn btn-default")); ?>

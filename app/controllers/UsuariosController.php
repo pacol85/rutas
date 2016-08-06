@@ -2,6 +2,15 @@
 class UsuariosController extends ControllerBase {
 	public function indexAction(){
 		$this->session->set("clear", "1");
+		$campos = [
+				["t","uNombre", "Nombre"],
+				["t", "uApellido", "Apellido"],
+				["t", "uCodigo", "C&oacute;digo"],
+				["p", "uPass", "Contrase&ntilde;a"],
+				["p", "uPass2", "Repita Contrase&ntilde;a"],
+				["h", "activo", "1"]				
+		];
+		$this->view->elem = parent::form($campos);
 	}
 	
 	public function nuevoAction(){
