@@ -54,35 +54,59 @@ class ControllerBase extends Controller
 	
 	public function elemento($t, $n, $l){
 		$elem = "";
-		if ($t == "h"){
-			$elem = $elem.$this->tag->hiddenField(array("$n", "value" => $l));
-		}else{
-			$elem = '<div class="form-group"><label for="';
-			//agregamos el nombre
-			$elem = $elem.$n.'" class="col-sm-2 control-label">';
-			//agrega label
-			$elem = $elem.$l.'</label><div class="col-sm-10">';
-			//agrega nombre campo
-			switch ($t){
-				case "t" :
-					$elem = $elem.$this->tag->textField(array("$n", "size" => 30, "class" => "form-control", "id" => "$n"));
-					break;
-				case "p" :
-					$elem = $elem.$this->tag->passwordField(array("$n", "size" => 30, "class" => "form-control", "id" => "$n"));
-					break;
-			}
-			
-			$elem = $elem.'</div></div>';
+		switch ($t){
+			case "h" :
+				$elem = $elem.$this->tag->hiddenField(array("$n", "value" => $l));
+				break;
+			case "s" :
+				$elem = $elem.'<div class="form-group"><div class="col-sm-12" align="center">';
+				$elem = $elem.$this->tag->submitButton(array("$l", "class" => "btn btn-default"));
+				$elem = $elem.'</div></div>';
+				break;
+			case "h2" :
+				$elem = $elem.'<h2>'.$l.'</h2>';
+				break;
+			case "l" :
+				$elem = $elem.'<div class="form-group"><label for="'.$l.'" class="col-sm-2 control-label">'.$l.'</label>';
+				$elem = $elem.'<div class="col-sm-2 control-label">'.$n.'</div></div>';
+				break;
+			default :
+				$elem = '<div class="form-group"><label for="';
+				//agregamos el nombre
+				$elem = $elem.$n.'" class="col-sm-2 control-label">';
+				//agrega label
+				$elem = $elem.$l.'</label><div class="col-sm-10">';
+				//agrega nombre campo
+				switch ($t){
+					case "t" :
+						$elem = $elem.$this->tag->textField(array("$n", "size" => 30, "class" => "form-control", "id" => "$n"));
+						break;
+					case "p" :
+						$elem = $elem.$this->tag->passwordField(array("$n", "size" => 30, "class" => "form-control", "id" => "$n"));
+						break;
+					case "d" :
+						$elem = $elem.$this->tag->dateField(array("$n", "min" => "0", "size" => 30, "class" => "form-control date datepicker", "id" => "$n"));
+						break;
+				}				
+				$elem = $elem.'</div></div>';
 		}		
 		return $elem;
 	}
 	
-	public  function form($campos){
-		$form = "";
+	public  function form($campos, $action){
+		$form = $this->tag->form(
+				array(
+						"usuarios/nuevo",
+						"autocomplete" => "off",
+						"class" => "form-horizontal"
+				)
+		);
 		foreach ($campos as $c){
 			$elem = ControllerBase::elemento($c[0], $c[1], $c[2]);
 			$form = $form.$elem;
 		}
+		
+		$form = $form.$this->tag->endForm();
 		return $form;
 	}
 		

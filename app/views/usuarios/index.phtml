@@ -17,22 +17,8 @@ $( document ).ready(function() {
 	
 }
 echo $this->getContent();
-echo $this->tag->form(
-		array(
-				"usuarios/nuevo",
-				"autocomplete" => "off",
-				"class" => "form-horizontal"
-		)
-);
 echo $this->view->elem;
-
 ?>
-<div class="form-group">
-    <div class="col-sm-12" align="center">
-        <?php echo $this->tag->submitButton(array("Agregar", "class" => "btn btn-default")); ?>
-    </div>
-</div>
-<?php echo $this->tag->endForm(); ?>
 <br>
 <script type="text/javascript" language="javascript" class="init">
 	$(document).ready(function() {

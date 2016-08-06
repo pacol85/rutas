@@ -8,9 +8,11 @@ class UsuariosController extends ControllerBase {
 				["t", "uCodigo", "C&oacute;digo"],
 				["p", "uPass", "Contrase&ntilde;a"],
 				["p", "uPass2", "Repita Contrase&ntilde;a"],
-				["h", "activo", "1"]				
+				["h", "activo", "1"],				
+				["s", "", "Agregar"]				
 		];
-		$this->view->elem = parent::form($campos);
+		$action = "usuarios/nuevo";
+		$this->view->elem = parent::form($campos, $action);
 	}
 	
 	public function nuevoAction(){
