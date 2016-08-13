@@ -1,6 +1,8 @@
 <?php
 class UsuariosController extends ControllerBase {
 	public function indexAction(){
+		//limpiar campos
+		$this->tag->resetInput();
 		$this->session->set("clear", "1");
 		$campos = [
 				["t", ["uNombre"], "Nombre"],
@@ -12,7 +14,7 @@ class UsuariosController extends ControllerBase {
 		
 		//js
 		$fields = ["uNombre", "uApellido", "uCodigo"];
-		$js = parent::jsCargarDatos($fields, ["main"], ["edit"]);
+		$otros = [["uCodigo", "'disabled', true"]];		
 		
 		//armar tabla
 		$head = ["C&oacute;digo", "Nombre", "Apellido", "Creaci&oacute;n", "Acciones"];
@@ -27,40 +29,38 @@ class UsuariosController extends ControllerBase {
 					$user->u_nombre,
 					$user->u_apellido,
 					$user->u_fcreacion,
-					"<a onClick=\"cargarDatos($user->u_codigo, '".$user->u_nombre."', '".$user->u_apellido."');\">Editar</a> |"
+					"<a onClick=\"cargarDatos('".$user->u_nombre."', '".$user->u_apellido."', '$user->u_codigo');\">Editar</a> |"
 					."<a href='usuarios/deshabilitar?uid=".$user->u_codigo."'>$accion</a></td>"
 			];
 			$tabla = $tabla.parent::td($col);			
 			$tabla = $tabla."</tr>";
 		}
-			
+		
+		$this->view->js = parent::jsCargarDatos($fields, ["main"], ["edit"], $otros);
 		$this->view->tabla = parent::elemento("enter", [], "").parent::ftable($tabla);
 		$this->view->titulo = parent::elemento("h1", ["titulo"], "Usuarios / Vendedores");
-		$this->view->form = parent::form($campos, $action);
+		$this->view->form = parent::form($campos, $action, "form1");
+		$this->view->botones = parent::elemento("bg", [["edit", "guardarCambio()", "Editar"],["cancel", "cancelar()", "Cancelar"]], "");
 	}
 	
 	public function nuevoAction(){
 		$user = new CrUsuario();
-		if ($this->request->has("uNombre") && $this->request->has("uApellido") && $this->request->has("uCodigo")){
-				//&& $this->request->has("uPass") && $this->request->has("uPass2")){
+		if ($this->request->has("uNombre") && $this->request->has("uApellido") && $this->request->has("uCodigo")){			
 			$uNombre = $this->request->get("uNombre");
 			$uApellido = $this->request->get("uApellido");
 			$uCodigo = $this->request->get("uCodigo");						
-			//$timezone  = -6;
-			//$fechaHoy = gmdate("Y-m-d H:i:s", time() + 3600*($timezone));
-			//$uCreacion = $this->request->get("creacion");
-			
-			//if ($uPass != $uPass2){
-			//	echo "Las contraseñas no concuerdan";
-			//}else{
-				$user->u_nombre = $uNombre;
-				$user->u_apellido = $uApellido;
-				$user->u_codigo = $uCodigo;
-				$user->u_activo = 1;
-				$user->u_admin = 0;
-				$user->save();
-				$this->session->set("mensaje", "Usuario creado exitosamente");
-			//}
+			$user->u_nombre = $uNombre;
+			$user->u_apellido = $uApellido;
+			$user->u_codigo = $uCodigo;
+			$user->u_password = $this->security->hash("fakePass");
+			$user->u_activo = 1;
+			$user->u_admin = 0;
+			$user->u_fcreacion = parent::fechaHoy(true);
+			if($user->save()){
+				$this->flash->success("Usuario creado exitosamente");
+			}else{
+				$this->flash->error("Ocurri&oacute; un error durante la creaci&oacute;n");
+			}
 		}else{
 			echo "No se ingresó la información completa";
 		}
@@ -96,5 +96,21 @@ class UsuariosController extends ControllerBase {
 				)
 		);
 		
+	}
+	
+	public function editarAction(){
+		if ($this->request->has("uNombre") && $this->request->has("uApellido")){
+			$user = CrUsuario::findFirst("u_codigo = ".$this->request->getPost("uCodigo"));
+			$user->u_nombre = $this->request->getPost("uNombre");
+			$user->u_apellido = $this->request->getPost("uApellido");
+			if($user->save()){
+				
+			}else{
+	
+			}			
+		}else{
+			
+		}
+		parent::forward("usuarios", "index");
 	}
 }

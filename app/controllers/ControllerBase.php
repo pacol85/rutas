@@ -175,7 +175,7 @@ public function elemento($t, $n, $l){
 		return $tabla;
 	}
 	
-	public function jsCargarDatos($campos, $hide, $show){
+	public function jsCargarDatos($campos, $hide = null, $show = null, $otros = null){
 		$js = "function cargarDatos(";
 		foreach ($campos as $c){
 			$js = $js.$c.",";
@@ -186,15 +186,36 @@ public function elemento($t, $n, $l){
 			$js = $js."$('#".$c2."').val(".$c2.");";			
 		}
 		
-		foreach ($hide as $h){
-			$js = $js."$('.".$h."').hide();";
+		if($hide != null){
+			foreach ($hide as $h){
+				$js = $js."$('.".$h."').hide();";
+			}	
+		}
+		if($show != null){
+			foreach ($show as $s){
+				$js = $js."$('.".$s."').show();";
+			}	
+		}
+		if($otros != null){
+			foreach ($otros as $o){
+				$js = $js."$('#".$o[0]."').prop(".$o[1].");";
+			}
 		}
 		
-		foreach ($show as $s){
-			$js = $js."$('.".$s."').show();";
-		}
 		$js = $js."}";
 		return $js;
+	}
+	
+	/*
+	 * Funcion para el dispatcher Forward
+	 */
+	public function forward($controller, $action){
+		return $this->dispatcher->forward(
+				array(
+						"controller" => $controller,
+						"action"     => $action
+				)
+		);
 	}
 		
 }

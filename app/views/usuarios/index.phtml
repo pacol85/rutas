@@ -1,25 +1,25 @@
 <script type="text/javascript" language="javascript" class="init">
 	$(document).ready(function() {
 		$('#usuarios').DataTable();
+		$('.edit').hide();	
 	} );
+
+	function guardarCambio(){
+		$('#form1').attr('action', "/rutas/usuarios/editar");
+		$('#form1').submit();
+	}
+	function cancelar(){
+		$('#form1').attr('action', "/rutas/usuarios/index");
+		$('#form1').submit();
+	}
+	<?php 
+		echo $this->view->js;
+	?>
 </script>
 <?php 
-//$mensaje = $this->session->get("mensaje");
-$limpiar = $this->session->get("clear");
-if($limpiar == 1){
-	echo '<script type="text/javascript">
-$( document ).ready(function() {
-	document.getElementById("uNombre").value = "";
-	document.getElementById("uApellido").value = "";
-	document.getElementById("uCodigo").value = "";
-	document.getElementById("uPass").value = "";
-	document.getElementById("uPass2").value = "";
-});
-</script>'; 
-	
-}
 echo $this->view->titulo;
 echo $this->getContent();
 echo $this->view->form;
+echo $this->view->botones;
 echo $this->view->tabla;
 ?>
