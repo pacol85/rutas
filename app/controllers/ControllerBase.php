@@ -52,62 +52,149 @@ class ControllerBase extends Controller
 		return $this->response;
 	}
 	
-	public function elemento($t, $n, $l){
+public function elemento($t, $n, $l){
 		$elem = "";
 		switch ($t){
 			case "h" :
-				$elem = $elem.$this->tag->hiddenField(array("$n", "value" => $l));
+				$elem = $elem.$this->tag->hiddenField(array("$n[0]", "value" => $l));
 				break;
 			case "s" :
-				$elem = $elem.'<div class="form-group"><div class="col-sm-12" align="center">';
+				$elem = $elem.'<div class="form-group main"><div class="col-sm-12" align="center">';
 				$elem = $elem.$this->tag->submitButton(array("$l", "class" => "btn btn-default"));
+				$elem = $elem.'</div></div>';
+				break;
+			case "bg" :
+				$elem = $elem.'<div class="form-group edit"><div class="col-sm-12" align="center">';
+				foreach ($n as $b){
+					$elem = $elem.'<button class="btn btn-default" id="'.$b[0].'" name="'.$b[0].'" onclick="'.$b[1].'">'.$b[2].'</button> ';
+				}				
 				$elem = $elem.'</div></div>';
 				break;
 			case "h2" :
 				$elem = $elem.'<h2>'.$l.'</h2>';
 				break;
+			case "h1" :
+				$elem = $elem.'<div class="page-header"><h1>'.$l.'</h1></div>';
+				break;
 			case "l" :
 				$elem = $elem.'<div class="form-group"><label for="'.$l.'" class="col-sm-2 control-label">'.$l.'</label>';
-				$elem = $elem.'<div class="col-sm-2 control-label">'.$n.'</div></div>';
+				$elem = $elem.'<div class="col-sm-2 control-label">'.$n[0].'</div></div>';
+				break;
+			case "lf" :
+				$elem = $elem.'<div class="form-group"><label for="'.$n[0].'" class="col-sm-12">'.$l.'</label></div>';
+				break;
+			case "enter" :
+				$elem = $elem.'<nobr>&nbsp;</nobr>';
 				break;
 			default :
 				$elem = '<div class="form-group"><label for="';
 				//agregamos el nombre
-				$elem = $elem.$n.'" class="col-sm-2 control-label">';
+				$elem = $elem.$n[0].'" class="col-sm-2 control-label">';
 				//agrega label
 				$elem = $elem.$l.'</label><div class="col-sm-10">';
 				//agrega nombre campo
 				switch ($t){
 					case "t" :
-						$elem = $elem.$this->tag->textField(array("$n", "size" => 30, "class" => "form-control", "id" => "$n"));
+						$elem = $elem.$this->tag->textField(array("$n[0]", "size" => 30, "class" => "form-control", "id" => "$n[0]"));
+						break;
+					case "tv" :
+						$elem = $elem.$this->tag->textField(array("$n[0]", "size" => 30, "class" => "form-control", "id" => "$n[0]", "value" => "$n[1]"));
+						break;
+					case "m" :
+						$elem = $elem.$this->tag->textField(array("$n[0]", "size" => 30, "class" => "form-control money", "id" => "$n[0]", "value" => "$n[1]"));
 						break;
 					case "p" :
-						$elem = $elem.$this->tag->passwordField(array("$n", "size" => 30, "class" => "form-control", "id" => "$n"));
+						$elem = $elem.$this->tag->passwordField(array("$n[0]", "size" => 30, "class" => "form-control", "id" => "$n[0]"));
 						break;
 					case "d" :
-						$elem = $elem.$this->tag->dateField(array("$n", "min" => "0", "size" => 30, "class" => "form-control date datepicker", "id" => "$n"));
+						$elem = $elem.$this->tag->dateField(array("$n[0]", "min" => "0", "size" => 30, "class" => "form-control date datepicker", "id" => "$n[0]"));
 						break;
-				}				
+					case "sdb" :
+						if(count($n) > 3){
+							$elem = $elem.$this->tag->select(array("$n[0]",
+									$n[1],
+									"using" => $n[2], "class" => "form-control", "id" => "$n[0]", "value" => $n[3]));
+						}else{
+							$elem = $elem.$this->tag->select(array("$n[0]",
+									$n[1],
+									"using" => $n[2], "class" => "form-control", "id" => "$n[0]"));
+						}						
+		    			break;
+					case "sel" :
+						if(count($n) > 2){
+							$elem = $elem.$this->tag->select(array("$n[0]", $n[1], "class" => "form-control", "id" => "$n[0]", "value" => $n[2]));
+						}else{
+							$elem = $elem.$this->tag->select(array("$n[0]", $n[1], "class" => "form-control", "id" => "$n[0]"));
+						}						
+						break;
+				}
 				$elem = $elem.'</div></div>';
-		}		
+		}
 		return $elem;
 	}
 	
-	public  function form($campos, $action){
+	public  function form($campos, $action, $id = "id"){
 		$form = $this->tag->form(
 				array(
-						"usuarios/nuevo",
+						$action,
 						"autocomplete" => "off",
-						"class" => "form-horizontal"
+						"class" => "form-horizontal",
+						"id" => "$id"
 				)
-		);
+				);
 		foreach ($campos as $c){
 			$elem = ControllerBase::elemento($c[0], $c[1], $c[2]);
 			$form = $form.$elem;
 		}
-		
+	
 		$form = $form.$this->tag->endForm();
 		return $form;
+	}
+	
+	public function thead($id, $head){
+		$tabla = '<div id="tdiv"><table id="'.$id.'" class="display" cellspacing="0"><thead><tr>';
+		
+		//Dibujar table head
+		foreach ($head as $h){
+			$tabla = $tabla.'<th>'.$h.'</th>';
+		}
+		$tabla = $tabla.'</tr></thead><tbody>';			
+		return $tabla;
+	}
+	
+	public function td($col){
+		$td = "";
+		foreach ($col as $c){
+			$td = $td.'<td>'.$c.'</td>';
+		}
+		return $td; 
+	}
+	
+	public function ftable($tabla){
+		$tabla = $tabla.'</tbody></table></div>';
+		return $tabla;
+	}
+	
+	public function jsCargarDatos($campos, $hide, $show){
+		$js = "function cargarDatos(";
+		foreach ($campos as $c){
+			$js = $js.$c.",";
+		}
+		$js = rtrim($js, ",");
+		$js = $js."){";
+		foreach ($campos as $c2){
+			$js = $js."$('#".$c2."').val(".$c2.");";			
+		}
+		
+		foreach ($hide as $h){
+			$js = $js."$('.".$h."').hide();";
+		}
+		
+		foreach ($show as $s){
+			$js = $js."$('.".$s."').show();";
+		}
+		$js = $js."}";
+		return $js;
 	}
 		
 }

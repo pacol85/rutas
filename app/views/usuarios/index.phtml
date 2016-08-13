@@ -1,6 +1,8 @@
-<div class="page-header">
-    <h1>Usuarios / Vendedores</h1>
-</div>
+<script type="text/javascript" language="javascript" class="init">
+	$(document).ready(function() {
+		$('#usuarios').DataTable();
+	} );
+</script>
 <?php 
 //$mensaje = $this->session->get("mensaje");
 $limpiar = $this->session->get("clear");
@@ -16,42 +18,8 @@ $( document ).ready(function() {
 </script>'; 
 	
 }
+echo $this->view->titulo;
 echo $this->getContent();
-echo $this->view->elem;
+echo $this->view->form;
+echo $this->view->tabla;
 ?>
-<br>
-<script type="text/javascript" language="javascript" class="init">
-	$(document).ready(function() {
-		$('#usuarios').DataTable();
-	} );
-</script>
-<div id="tdiv">
-<table id="usuarios" class="display" cellspacing="0">
-<thead><tr>
-	<th>C&oacute;digo</th>
-	<th>Nombre</th>
-	<th>Apellido</th>
-	<th>Creaci&oacute;n</th>
-	<th>Acciones</th>
-</tr></thead>
-<tbody>
-<?php
-	$userList = CrUsuario::find();
-	foreach ($userList as $user){
-		echo "<tr>";
-		echo "<td>$user->u_codigo</td>";
-		echo "<td>$user->u_nombre</td>";
-		echo "<td>$user->u_apellido</td>";
-		echo "<td>$user->u_fcreacion</td>";
-		echo "<td><a onClick=\"cargaDatos($user->u_codigo, '".$user->u_nombre."', '".$user->u_apellido."');\">Editar</a> |";
-		if($user->u_activo == 1){
-			echo "<a href='usuarios/deshabilitar?uid=".$user->u_codigo."&d=1'>Deshabilitar</a></td>";
-		}else{
-			echo "<a href='usuarios/deshabilitar?uid=".$user->u_codigo."&d=0'>Habilitar</a></td>";
-		}		
-		echo "</tr>";
-	}
-?>
-</tbody>
-</table>
-</div>
