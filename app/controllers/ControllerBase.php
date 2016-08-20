@@ -52,36 +52,46 @@ class ControllerBase extends Controller
 		return $this->response;
 	}
 	
-public function elemento($t, $n, $l){
+	public function elemento($t, $n, $l, $r = 0){
+		$dId = "";
+		if(!is_numeric($r)){
+			$dId = "id='$r'";
+		}
 		$elem = "";
 		switch ($t){
+			case "i" :
+				$elem = $elem."<img id='$n[0]' src='$l' onclick ='$n[1]'>";				
+				break;
+			case "hr" :
+				$elem = $elem."<hr>";
+				break;
 			case "h" :
 				$elem = $elem.$this->tag->hiddenField(array("$n[0]", "value" => $l));
 				break;
 			case "s" :
-				$elem = $elem.'<div class="form-group main"><div class="col-sm-12" align="center">';
+				$elem = $elem.'<div class="form-group main"><div class="col-sm-12" align="center" '.$dId.'>';
 				$elem = $elem.$this->tag->submitButton(array("$l", "class" => "btn btn-default"));
 				$elem = $elem.'</div></div>';
 				break;
 			case "bg" :
-				$elem = $elem.'<div class="form-group edit"><div class="col-sm-12" align="center">';
+				$elem = $elem.'<div class="form-group edit"><div class="col-sm-12" align="center" '.$dId.'>';
 				foreach ($n as $b){
 					$elem = $elem.'<button class="btn btn-default" id="'.$b[0].'" name="'.$b[0].'" onclick="'.$b[1].'">'.$b[2].'</button> ';
-				}				
+				}
 				$elem = $elem.'</div></div>';
 				break;
 			case "h2" :
 				$elem = $elem.'<h2>'.$l.'</h2>';
 				break;
 			case "h1" :
-				$elem = $elem.'<div class="page-header"><h1>'.$l.'</h1></div>';
+				$elem = $elem.'<div class="page-header" '.$dId.'><h1>'.$l.'</h1></div>';
 				break;
 			case "l" :
 				$elem = $elem.'<div class="form-group"><label for="'.$l.'" class="col-sm-2 control-label">'.$l.'</label>';
-				$elem = $elem.'<div class="col-sm-2 control-label">'.$n[0].'</div></div>';
+				$elem = $elem.'<div class="col-sm-2 control-label" '.$dId.'>'.$n[0].'</div></div>';
 				break;
 			case "lf" :
-				$elem = $elem.'<div class="form-group"><label for="'.$n[0].'" class="col-sm-12">'.$l.'</label></div>';
+				$elem = $elem.'<div class="form-group" '.$dId.'><label for="'.$n[0].'" class="col-sm-12">'.$l.'</label></div>';
 				break;
 			case "enter" :
 				$elem = $elem.'<nobr>&nbsp;</nobr>';
@@ -91,18 +101,29 @@ public function elemento($t, $n, $l){
 				//agregamos el nombre
 				$elem = $elem.$n[0].'" class="col-sm-2 control-label">';
 				//agrega label
-				$elem = $elem.$l.'</label><div class="col-sm-10">';
+				$elem = $elem.$l.'</label><div class="col-sm-10" '.$dId.'>';
 				//agrega nombre campo
 				switch ($t){
 					case "t" :
-						$elem = $elem.$this->tag->textField(array("$n[0]", "size" => 30, "class" => "form-control", "id" => "$n[0]"));
+						if($r == 1){
+							$elem = $elem.$this->tag->textField(array("$n[0]", "size" => 30, "class" => "form-control", "id" => "$n[0]", "readonly" => ""));
+						}else{
+							$elem = $elem.$this->tag->textField(array("$n[0]", "size" => 30, "class" => "form-control", "id" => "$n[0]"));
+						}						
 						break;
 					case "tv" :
-						$elem = $elem.$this->tag->textField(array("$n[0]", "size" => 30, "class" => "form-control", "id" => "$n[0]", "value" => "$n[1]"));
+						if($r == 1){
+							$elem = $elem.$this->tag->textField(array("$n[0]", "size" => 30, "class" => "form-control", "id" => "$n[0]", "value" => "$n[1]", "readonly" => ""));
+						}else{
+							$elem = $elem.$this->tag->textField(array("$n[0]", "size" => 30, "class" => "form-control", "id" => "$n[0]", "value" => "$n[1]"));
+						}						
 						break;
 					case "m" :
 						$elem = $elem.$this->tag->textField(array("$n[0]", "size" => 30, "class" => "form-control money", "id" => "$n[0]", "value" => "$n[1]"));
 						break;
+					case "e" :
+						$elem = $elem.$this->tag->textField(array("$n[0]", "size" => 30, "class" => "form-control email", "id" => "$n[0]"));
+						break;								
 					case "p" :
 						$elem = $elem.$this->tag->passwordField(array("$n[0]", "size" => 30, "class" => "form-control", "id" => "$n[0]"));
 						break;
@@ -118,16 +139,23 @@ public function elemento($t, $n, $l){
 							$elem = $elem.$this->tag->select(array("$n[0]",
 									$n[1],
 									"using" => $n[2], "class" => "form-control", "id" => "$n[0]"));
-						}						
-		    			break;
+						}
+						break;
 					case "sel" :
 						if(count($n) > 2){
 							$elem = $elem.$this->tag->select(array("$n[0]", $n[1], "class" => "form-control", "id" => "$n[0]", "value" => $n[2]));
 						}else{
 							$elem = $elem.$this->tag->select(array("$n[0]", $n[1], "class" => "form-control", "id" => "$n[0]"));
-						}						
+						}
 						break;
-				}
+					case "r" :
+						foreach ($n[1] as $rb){
+							$elem = $elem."<label for='$rb'>$rb</label>";
+							$elem = $elem.$this->tag->radioField(array("$n[0]", "value" => "$rb", "id" => "$rb"));
+							$elem = $elem."&nbsp;";
+						}
+						break;
+				}				
 				$elem = $elem.'</div></div>';
 		}
 		return $elem;
@@ -143,7 +171,9 @@ public function elemento($t, $n, $l){
 				)
 				);
 		foreach ($campos as $c){
-			$elem = ControllerBase::elemento($c[0], $c[1], $c[2]);
+			if(count($c) > 3){
+				$elem = ControllerBase::elemento($c[0], $c[1], $c[2], $c[3]);
+			}else $elem = ControllerBase::elemento($c[0], $c[1], $c[2]);
 			$form = $form.$elem;
 		}
 	
@@ -153,13 +183,19 @@ public function elemento($t, $n, $l){
 	
 	public function thead($id, $head){
 		$tabla = '<div id="tdiv"><table id="'.$id.'" class="display" cellspacing="0"><thead><tr>';
-		
+	
 		//Dibujar table head
 		foreach ($head as $h){
 			$tabla = $tabla.'<th>'.$h.'</th>';
 		}
-		$tabla = $tabla.'</tr></thead><tbody>';			
+		$tabla = $tabla.'</tr></thead><tbody>';
 		return $tabla;
+	}
+	public function tbody($col){
+		$tr = "<tr>";
+		$tr = $tr.$this->td($col);
+		$tr = $tr."</tr>";
+		return $tr;
 	}
 	
 	public function td($col){
@@ -167,7 +203,7 @@ public function elemento($t, $n, $l){
 		foreach ($col as $c){
 			$td = $td.'<td>'.$c.'</td>';
 		}
-		return $td; 
+		return $td;
 	}
 	
 	public function ftable($tabla){
@@ -183,25 +219,25 @@ public function elemento($t, $n, $l){
 		$js = rtrim($js, ",");
 		$js = $js."){";
 		foreach ($campos as $c2){
-			$js = $js."$('#".$c2."').val(".$c2.");";			
+			$js = $js."$('#".$c2."').val(".$c2.");";
 		}
-		
+	
 		if($hide != null){
 			foreach ($hide as $h){
 				$js = $js."$('.".$h."').hide();";
-			}	
+			}
 		}
 		if($show != null){
 			foreach ($show as $s){
 				$js = $js."$('.".$s."').show();";
-			}	
+			}
 		}
 		if($otros != null){
 			foreach ($otros as $o){
 				$js = $js."$('#".$o[0]."').prop(".$o[1].");";
 			}
 		}
-		
+	
 		$js = $js."}";
 		return $js;
 	}
@@ -215,7 +251,7 @@ public function elemento($t, $n, $l){
 						"controller" => $controller,
 						"action"     => $action
 				)
-		);
+				);
 	}
 		
 }

@@ -1,11 +1,14 @@
+<link rel="stylesheet" type="text/css" href="css/elements.css">
 <script type="text/javascript" language="javascript" class="init">
 	$(document).ready(function() {
+		div_hide();
 		$('#usuarios').DataTable();
 		$('.edit').hide();	
 	} );
 
 	function guardarCambio(){
 		$('#form1').attr('action', "/rutas/usuarios/editar");
+		$('#uCodigo').prop('disabled',false);
 		$('#form1').submit();
 	}
 	function cancelar(){
@@ -15,6 +18,17 @@
 	<?php 
 		echo $this->view->js;
 	?>
+
+	function div_show(uid, nombre) {
+		$("#nombre").val(nombre);
+		document.getElementById('pop').style.display = "block";
+		$("#uid").val(uid);	
+	};
+	
+	//Function to Hide Popup
+	function div_hide(){
+		document.getElementById('pop').style.display = "none";
+	};	
 </script>
 <?php 
 echo $this->view->titulo;
@@ -23,3 +37,14 @@ echo $this->view->form;
 echo $this->view->botones;
 echo $this->view->tabla;
 ?>
+
+<div id="pop">
+<!-- Popup Div Starts Here -->
+<div id="popupCorr">
+<!-- AgregaCorr Popup -->
+<?php 
+echo $this->view->form2;
+?>
+</div>
+<!-- Popup Div Ends Here -->
+</div>
