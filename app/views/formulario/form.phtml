@@ -1,0 +1,62 @@
+<?php 
+echo $this->view->titulo;
+echo $this->getContent();
+echo $this->view->form;
+echo $this->view->botones;
+echo $this->view->tabla;
+?>
+
+<div id="dtrans" name="dtrans">
+<table id="trans">
+	<thead>
+		<th>Cliente</th><th colspan="2">Factura</th><th colspan="2">Pago</th><th>Dev/Error</th>
+	</thead>
+	<thead>
+		<th>cod - nombre</th><th>F</th><th>E</th><th>E</th><th>C</th><th></th>
+	</thead>
+	<tbody>
+	<?php 
+		$clientes = CrDirecciones::find("di_ruta = ")
+	?>
+		<tr>
+			<td>Nombre</td><td>v2</td><td>v3</td><td>v4</td><td>v5</td><td>v6</td>
+		</tr>
+		<tr>			<td>Nombre</td><td>v2</td><td>v3</td><td>v4</td><td>v5</td><td>v6</td>		</tr>
+		<tr>			<td>Nombre</td><td>v2</td><td>v3</td><td>v4</td><td>v5</td><td>v6</td>		</tr>
+		<tr>			<td>Nombre</td><td>v2</td><td>v3</td><td>v4</td><td>v5</td><td>v6</td>		</tr>
+		<tr>			<td>Nombre</td><td>v2</td><td>v3</td><td>v4</td><td>v5</td><td>v6</td>		</tr>
+		<tr>			<td>Nombre</td><td>v2</td><td>v3</td><td>v4</td><td>v5</td><td>v6</td>		</tr>
+		<tr>			<td>Nombre</td><td>v2</td><td>v3</td><td>v4</td><td>v5</td><td>v6</td>		</tr>
+		<tr>			<td>Nombre</td><td>v2</td><td>v3</td><td>v4</td><td>v5</td><td>v6</td>		</tr>
+		<tr>			<td>Nombre</td><td>v2</td><td>v3</td><td>v4</td><td>v5</td><td>v6</td>		</tr>
+		<tr>			<td>Nombre</td><td>v2</td><td>v3</td><td>v4</td><td>v5</td><td>v6</td>		</tr>
+		<tr>			<td>Nombre</td><td>v2</td><td>v3</td><td>v4</td><td>v5</td><td>v6</td>		</tr>
+		<tr>			<td><input type="text"></input></td>
+		<td><input type="text"></input></td>
+		<td><input type="text"></input></td>
+		<td><input type="text"></input></td>
+		<td><input type="text"></input></td>
+		<td><input type="text"></input></td>		</tr>
+	</tbody>
+</table>
+</div>
+
+<h3>Gastos</h3>
+<div id="dgastos" name="dgastos">
+<table id="gastos">
+	<thead>
+		<th>Razon</th><th>Monto</th>
+	</thead>
+	<tbody>
+		<td>Gasolina</td><td>30.00</td>
+	</tbody>
+</table>
+</div>
+
+<h3>Prestamos</h3>
+<div id="dprestamos" name="dprestamos">
+<table id="prestamos">	<thead>		<th>Razon</th><th>Monto</th>	</thead>	<tbody>		<td>Gasolina</td><td>30.00</td>	</tbody></table></div>
+<h3>Otros</h3>
+<div id="dotros" name="dotros"><table id="otros">	<thead>		<th>Razon</th><th>Monto</th>	</thead>	<tbody>		<td>Gasolina</td><td>30.00</td>	</tbody></table></div>
+<h3>Detalle</h3>
+<div id="detalle" >

@@ -19,24 +19,6 @@ left:50%;
 top:17%;
 margin-left:-202px;
 font-family:'Raleway',sans-serif
-}
-form#popf {
-max-width:500px;
-min-width:250px;
-padding:5px 50px;
-border:2px solid gray;
-border-radius:10px;
-font-family:raleway;
-background-color:#fff
-}
-img#close {
-position:absolute;
-right:-14px;
-top:-14px;
-width: 28px;
-height: 28px;
-cursor:pointer
-}
 
 p {
 margin-top:30px
@@ -84,6 +66,26 @@ border:1px solid #ccc;
 padding-left:10px;
 font-size:14px;
 }
+}
+form#popf {
+max-width:500px;
+min-width:250px;
+padding:5px 50px;
+border:2px solid gray;
+border-radius:10px;
+font-family:raleway;
+background-color:#fff
+}
+img#close {
+position:absolute;
+right:-14px;
+top:-14px;
+width: 28px;
+height: 28px;
+cursor:pointer
+}
+
+
 /*----------------------------------------------
 button {
 width:10%;

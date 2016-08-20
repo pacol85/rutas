@@ -1,54 +1,16 @@
 <?php
-class UsuariosController extends ControllerBase {
+class FormularioController extends ControllerBase {
 	public function indexAction(){
-		//limpiar campos
-		$this->tag->resetInput();
-		$this->session->set("clear", "1");
+		$uid = $this->session->get("usuario");
+		$rxv = CrVendedorRuta::find("u_id = $uid");
+		$rutas = CrRuta::find();
 		$campos = [
-				["t", ["uNombre"], "Nombre"],
-				["t", ["uApellido"], "Apellido"],
-				["t", ["uCodigo"], "C&oacute;digo"],
-				["s", [""], "Agregar"]				
+				["lf", ["ins"], "Seleccionar ruta a ingresar"],
+				["sdb", ["ruta", $rutas, ["ru_id", "ru_nombre"]], "Ruta"],
+				["s", [""], "Seleccionar"]				
 		];
-		$action = "usuarios/nuevo";
+		$action = "formulario/form";
 		
-		//js
-		$fields = ["uNombre", "uApellido", "uCodigo"];
-		$otros = [["uCodigo", "'disabled', true"]];		
-		
-		//armar tabla
-		$head = ["C&oacute;digo", "Nombre", "Apellido", "Creaci&oacute;n", "Acciones"];
-		$tabla = parent::thead("usuarios", $head);
-		$userList = CrUsuario::find();
-		foreach ($userList as $user){
-			$tabla = $tabla."<tr>";
-			$accion = "Deshabilitar";
-			if($user->u_activo == 0) $accion = "Habilitar";
-			$col = [
-					$user->u_codigo,
-					$user->u_nombre,
-					$user->u_apellido,
-					$user->u_fcreacion,
-					"<a onClick=\"cargarDatos('".$user->u_nombre."', '".$user->u_apellido."', '$user->u_codigo');\">Editar</a> |"
-					."<a href='usuarios/deshabilitar?uid=".$user->u_codigo."'>$accion</a> | "
-					."<a onClick=\"div_show('".$user->u_codigo."','".$user->u_nombre."');\">Cambiar Password</a></td>"
-			];
-			$tabla = $tabla.parent::td($col);			
-			$tabla = $tabla."</tr>";
-		}
-		
-		//div escondido flotante para cambio de contraseña
-		$form2 = [
-				["i", ["close", "div_hide()"], "images/x.png"],				
-				["h2", ["titulo2"], "Nueva Contrase&ntilde;a"],
-				["t", ["nombre"], "Usuario", "cuser"],
-				["p", ["pass"], "Contrase&ntilde;a", "cpass"],
-				["h", ["uid"], ""],
-				["s", [""], "Modificar"]	
-		];
-		//<hr><img id="close" src="images/x.png" onclick ="div_hide()">
-		$this->view->js = parent::jsCargarDatos($fields, ["main"], ["edit"], $otros);
-		$this->view->tabla = parent::elemento("enter", [], "").parent::ftable($tabla);
 		$this->view->titulo = parent::elemento("h1", ["titulo"], "Usuarios / Vendedores");
 		$this->view->form = parent::form($campos, $action, "form1");
 		$this->view->botones = parent::elemento("bg", [["edit", "guardarCambio()", "Editar"],["cancel", "cancelar()", "Cancelar"]], "");
