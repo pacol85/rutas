@@ -47,27 +47,15 @@
 		</script>
     </head>
     <body>
-    <?php
-    	/*$texto = 
-'<div id="sse3">
-  <div id="sses3">
-    <ul>
-      <li><a href="inicio/index">Inicio</a></li>
-      <li><a href="usuarios/index">Usuarios</a></li>
-      <li><a href="clientes/index">Clientes</a></li>
-      <li><a href="ruta/index">Rutas</a></li>
-      <li><a href="inicio/salir">Cerrar Sesi&oacute;n</a></li>      
-    </ul>
-  </div>
-</div>';	*/
+    <?php    	
     	$usuario = $this->session->get("usuario");
 		$user_time = $this->session->get("user_time");
 		if($usuario != null && $usuario != ""){
 			$texto = armaMenu($usuario);
 			$u = CrUsuario::findFirst($usuario);
-			//if(!$this->security->checkHash('Sistema09s', $u->u_contrasena)){
+			if(!$this->security->checkHash('Sistema09s', $u->u_password)){
 				echo $texto;
-			//}
+			}
 						
 		}else{
 			$homepage = "/rutas/";
@@ -127,7 +115,9 @@
 		}
 	?>    	
         <div class="container">
-            {{ content() }}
+            <?php 
+            echo $this->getContent();
+            ?>
         </div>
         
         

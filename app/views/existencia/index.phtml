@@ -2,26 +2,13 @@
 use Phalcon\Registry;
 
 $registry = new \Phalcon\Registry();
-//$registry->tablaString = ''; 
+//$registry->tablaString = '';
+
+echo $this->view->titulo;
+echo $this->getContent();
+echo $this->view->form;
 ?>
-<div class="page-header">
-    <h1>Agregar Productos y Colores</h1>
-</div>
-<?php echo $this->tag->form(array("existencia/subir",  'enctype' => 'multipart/form-data')); ?>
 
-<table>
-<tbody>
-<tr>
-	<td>Archivo</td>
-	<td><?php echo $this->tag->fileField("archivo") ?></td>
-</tr>
-<tr>
-	<td colspan="2"><?php echo $this->tag->submitButton("Subir") ?></td>
-</tr>
-</tbody>
-</table>
-
-</form>
 <br>
 <script type="text/javascript" language="javascript" class="init">
 	$(document).ready(function() {

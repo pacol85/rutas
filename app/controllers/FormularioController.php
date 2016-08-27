@@ -1,9 +1,14 @@
 <?php
+use Phalcon\Paginator\Adapter\Model;
 class FormularioController extends ControllerBase {
 	public function indexAction(){
-		$uid = $this->session->get("usuario");
-		$rxv = CrVendedorRuta::find("u_id = $uid");
-		$rutas = CrRuta::find();
+		$uid = parent::gSession("usuario");
+		//$rxv = CrVendedorRuta::find("u_id = $uid");
+		//$rutas = [];
+		$rutas = parent::query(new CrRuta(), 
+				"Select * from cr_ruta r,(select ru_id, u_id from cr_vendedor_ruta) x
+				where r.ru_id = x.ru_id and x.u_id = 999");
+		//$rutas = CrRuta::find("ru_id = (select x.ru_id from cr_vendedor_ruta x where x.u_id = $uid)");
 		$campos = [
 				["lf", ["ins"], "Seleccionar ruta a ingresar"],
 				["sdb", ["ruta", $rutas, ["ru_id", "ru_nombre"]], "Ruta"],
@@ -11,41 +16,19 @@ class FormularioController extends ControllerBase {
 		];
 		$action = "formulario/form";
 		
-		$this->view->titulo = parent::elemento("h1", ["titulo"], "Usuarios / Vendedores");
-		$this->view->form = parent::form($campos, $action, "form1");
-		$this->view->botones = parent::elemento("bg", [["edit", "guardarCambio()", "Editar"],["cancel", "cancelar()", "Cancelar"]], "");
-		$this->view->form2 = parent::form($form2, "usuarios/changePass", "popf");
+		$this->view->titulo = parent::elemento("h1", ["titulo"], "Formulario de ingreso de Ruta");
+		$this->view->form = parent::form($campos, $action, "form1");		
 	}
 	
-	public function nuevoAction(){
-		$user = new CrUsuario();
-		if ($this->request->has("uNombre") && $this->request->has("uApellido") && $this->request->has("uCodigo")){			
-			$uNombre = $this->request->get("uNombre");
-			$uApellido = $this->request->get("uApellido");
-			$uCodigo = $this->request->get("uCodigo");						
-			$user->u_nombre = $uNombre;
-			$user->u_apellido = $uApellido;
-			$user->u_codigo = $uCodigo;
-			$user->u_password = $this->security->hash("fakePass");
-			$user->u_activo = 1;
-			$user->u_admin = 0;
-			$user->u_fcreacion = parent::fechaHoy(true);
-			if($user->save()){
-				$this->flash->success("Usuario creado exitosamente");
-			}else{
-				$this->flash->error("Ocurri&oacute; un error durante la creaci&oacute;n");
-			}
-		}else{
-			echo "No se ingresó la información completa";
-		}
-		
-		$this->dispatcher->forward(
-    				array(
-    						"controller" => "usuarios",
-    						"action"     => "index"
-    				)
-    		);
-		
+	public function seleccionarAction(){
+		parent::sSession("ruta", parent::gPost("ruta"));
+		parent::forward("formulario", "form");	
+	}
+	
+	public function formAction(){
+		$ruta = CrRuta::findFirst("ru_id = ".parent::gSession("ruta"));
+		$fh = parent::fechaHoy(false);
+		parent::view("Formulario para Ruta: $ruta->ru_nombre con fecha: $fh");
 	}
 	
 	public function deshabilitarAction(){

@@ -6,7 +6,12 @@
 class ExistenciaController extends ControllerBase {
 	
 	public function indexAction(){
-		
+		$campos = [
+				["f", ["archivo"], "Archivo"],
+				["s", ["subir"], "Subir"]
+		];
+		$form = parent::multiForm($campos, "existencia/subir", "form1");
+		parent::view("Agregar Productos y Colores", $form);
 	}
 	
 	public function subirAction(){
