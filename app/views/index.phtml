@@ -47,7 +47,9 @@
 		</script>
     </head>
     <body>
-    <?php    	
+    <?php
+    	use Phalcon\Mvc\Model\Resultset\Simple as Resultset;
+
     	$usuario = $this->session->get("usuario");
 		$user_time = $this->session->get("user_time");
 		if($usuario != null && $usuario != ""){
@@ -70,8 +72,13 @@
 		
 		function armaMenu($uid) {
 			$user = CrUsuario::findFirst("u_codigo = $uid");
+			if($user == null){
 				
-			$titulos = Menu::find(array("mparent is null and mid in (select x.mid from mxr x where x.rid = $user->rid)", "order" => "mid"));
+			}
+			$m = new Menu();
+			$sql = "select * from menu where mparent is null and mid in (select x.mid from mxr x where x.rid = '".$user->rid."')";
+			$titulos = new Resultset(null, $m, $m->getReadConnection()->query($sql));	
+			//$titulos = Menu::find(array("mparent is null and mid in (select x.mid from mxr x where x.rid = $user->rid)", "order" => "mid"));
 			$lia = '<li><a href="';
 			$liaf = '">';
 			$endLi = '</a></li>';

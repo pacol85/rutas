@@ -1,0 +1,61 @@
+/**
+ * The first commented line is your dabblet’s title
+ */
+div#dtrans {   
+	width: 71%;
+	float: left;
+	margin: 5px;
+	padding: 1px;
+	border-radius: 5px;	
+	border: 1px solid black;
+}
+
+table{
+	width: 100%;
+	
+}
+tr:nth-child(even) {
+	background-color: #d1d1d1;	
+}
+
+td,th{
+	align: center;
+}
+
+th{
+	background-color: #fa5;
+}
+h3{
+	padding: 1px;
+	margin: 1px;
+	text-align: center;
+	color: dark-grey;
+	float: right;
+	width: 27%;
+}
+div#dgastos,div#dprestamos,div#dotros{
+	float: right;
+	margin: 5px;	
+	padding: 1px;
+	width: 27%;
+	border-radius: 5px;
+	border: 1px solid #333355;
+}
+
+input {    
+	width:100%;   
+	padding:0%;
+	border: 1px solid blanchedalmond; 
+}
+input[type=text]:focus {
+    border: 1px solid #555;
+    background: #ffc891;
+}
+
+input[class="grey"]{
+	background: #d1d1d1;
+}
+
+font{
+	color: red;
+}

@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="css/dabblet.css">
 <?php 
 echo $this->view->titulo;
 echo $this->getContent();
@@ -12,28 +13,27 @@ echo $this->getContent();
 		<th>cod - nombre</th><th>F</th><th>E</th><th>E</th><th>C</th><th></th>
 	</thead>
 	<tbody>
-	<?php 
-		$clientes = CrDirecciones::find("di_ruta = ")
-	?>
-		<tr>
-			<td>Nombre</td><td>v2</td><td>v3</td><td>v4</td><td>v5</td><td>v6</td>
-		</tr>
-		<tr>			<td>Nombre</td><td>v2</td><td>v3</td><td>v4</td><td>v5</td><td>v6</td>		</tr>
-		<tr>			<td>Nombre</td><td>v2</td><td>v3</td><td>v4</td><td>v5</td><td>v6</td>		</tr>
-		<tr>			<td>Nombre</td><td>v2</td><td>v3</td><td>v4</td><td>v5</td><td>v6</td>		</tr>
-		<tr>			<td>Nombre</td><td>v2</td><td>v3</td><td>v4</td><td>v5</td><td>v6</td>		</tr>
-		<tr>			<td>Nombre</td><td>v2</td><td>v3</td><td>v4</td><td>v5</td><td>v6</td>		</tr>
-		<tr>			<td>Nombre</td><td>v2</td><td>v3</td><td>v4</td><td>v5</td><td>v6</td>		</tr>
-		<tr>			<td>Nombre</td><td>v2</td><td>v3</td><td>v4</td><td>v5</td><td>v6</td>		</tr>
-		<tr>			<td>Nombre</td><td>v2</td><td>v3</td><td>v4</td><td>v5</td><td>v6</td>		</tr>
-		<tr>			<td>Nombre</td><td>v2</td><td>v3</td><td>v4</td><td>v5</td><td>v6</td>		</tr>
-		<tr>			<td>Nombre</td><td>v2</td><td>v3</td><td>v4</td><td>v5</td><td>v6</td>		</tr>
-		<tr>			<td><input type="text"></input></td>
-		<td><input type="text"></input></td>
-		<td><input type="text"></input></td>
-		<td><input type="text"></input></td>
-		<td><input type="text"></input></td>
-		<td><input type="text"></input></td>		</tr>
+	<?php
+		$body = ""; 
+		$class = "white";
+		$dirClientes = CrDirecciones::find("di_ruta = ".$this->view->ruta);
+		foreach ($dirClientes as $dc){
+			$c = CrClientes::findFirst("cl_codigo = $dc->di_cliente");
+			$body = $body."<tr><td>".$c->cl_codigo." - ".$c->cl_nombre."</td>".
+			"<td>".$this->tag->textField(array("f$c->cl_codigo","id" => "f$c->cl_codigo", "class" => $class))."</td>".
+			"<td>".$this->tag->textField(array("ea$c->cl_codigo","id" => "ea$c->cl_codigo", "class" => $class))."</td>".
+			"<td>".$this->tag->textField(array("eb$c->cl_codigo","id" => "eb$c->cl_codigo", "class" => $class))."</td>".
+			"<td>".$this->tag->textField(array("c$c->cl_codigo","id" => "c$c->cl_codigo", "class" => $class))."</td>".
+			"<td>".$this->tag->textField(array("dev$c->cl_codigo","id" => "dev$c->cl_codigo", "class" => $class))."</td>".
+			"</tr>";
+			if($class == "white"){
+				$class = "grey";
+			}else{
+				$class = "white";
+			}
+		}
+		echo $body;
+	?>		
 	</tbody>
 </table>
 </div>

@@ -14,7 +14,7 @@ class FormularioController extends ControllerBase {
 				["sdb", ["ruta", $rutas, ["ru_id", "ru_nombre"]], "Ruta"],
 				["s", [""], "Seleccionar"]				
 		];
-		$action = "formulario/form";
+		$action = "formulario/seleccionar";
 		
 		$this->view->titulo = parent::elemento("h1", ["titulo"], "Formulario de ingreso de Ruta");
 		$this->view->form = parent::form($campos, $action, "form1");		
@@ -27,6 +27,7 @@ class FormularioController extends ControllerBase {
 	
 	public function formAction(){
 		$ruta = CrRuta::findFirst("ru_id = ".parent::gSession("ruta"));
+		$this->view->ruta = $ruta->ru_id;
 		$fh = parent::fechaHoy(false);
 		parent::view("Formulario para Ruta: $ruta->ru_nombre con fecha: $fh");
 	}
