@@ -1,4 +1,5 @@
 <link rel="stylesheet" href="css/dabblet.css">
+<script type="text/javascript" src="js/form.js"></script>
 <?php 
 echo $this->view->titulo;
 echo $this->getContent();
@@ -15,7 +16,7 @@ echo $this->getContent();
 	<tbody>
 	<?php
 		$body = ""; 
-		$class = "white";
+		$class = "white number";
 		$dirClientes = CrDirecciones::find("di_ruta = ".$this->view->ruta);
 		foreach ($dirClientes as $dc){
 			$c = CrClientes::findFirst("cl_codigo = $dc->di_cliente");
@@ -26,10 +27,10 @@ echo $this->getContent();
 			"<td>".$this->tag->textField(array("c$c->cl_codigo","id" => "c$c->cl_codigo", "class" => $class))."</td>".
 			"<td>".$this->tag->textField(array("dev$c->cl_codigo","id" => "dev$c->cl_codigo", "class" => $class))."</td>".
 			"</tr>";
-			if($class == "white"){
-				$class = "grey";
+			if($class == "white number"){
+				$class = "grey number";
 			}else{
-				$class = "white";
+				$class = "white number";
 			}
 		}
 		echo $body;
@@ -38,6 +39,7 @@ echo $this->getContent();
 </table>
 </div>
 
+<div id="rtable" name="rtable">
 <h3>Gastos</h3>
 <div id="dgastos" name="dgastos">
 <table id="gastos">
@@ -52,8 +54,23 @@ echo $this->getContent();
 
 <h3>Prestamos</h3>
 <div id="dprestamos" name="dprestamos">
-<table id="prestamos">	<thead>		<th>Razon</th><th>Monto</th>	</thead>	<tbody>		<td>Gasolina</td><td>30.00</td>	</tbody></table></div>
+<table id="prestamos">	<thead>		<th>Razon</th><th>Monto</th>	</thead>	<tbody>		<td>Gasolina</td><td>30.00</td>	</tbody></table>
+</div>
 <h3>Otros</h3>
-<div id="dotros" name="dotros"><table id="otros">	<thead>		<th>Razon</th><th>Monto</th>	</thead>	<tbody>		<td>Gasolina</td><td>30.00</td>	</tbody></table></div>
+<div id="dotros" name="dotros"><table id="otros">	<thead>		<th>Razon</th><th>Monto</th>	</thead>	<tbody>		<td>Gasolina</td><td>30.00</td>	</tbody></table>
+</div>
 <h3>Detalle</h3>
 <div id="detalle" >
+</div>
+</div>
+
+<div id="totales" name="totales>
+<table id="ttotal">
+	<tbody>
+		<tr>
+			<td>Total Efectivo:</td><td><div id="tefectivo" name="tefectivo"></div></td>
+			<td>Total Cheque:</td><td><div id="tcheque" name="tcheque"></div></td>
+			<td>Total Global:</td><td><div id="tglobal" name="tglobal"></div></td>
+	</tbody>
+</table>
+</div>
