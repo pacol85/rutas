@@ -65,7 +65,14 @@ $di->setShared('db', function () use ($config) {
 
     $class = 'Phalcon\Db\Adapter\Pdo\\' . $adapter;
 
-    return new $class($dbConfig);
+    $retornar;
+    try {
+    	$retornar = new $class($dbConfig);
+    } catch (Exception $e) {
+    	$retornar = "Error en la conexion";
+    }
+    return $retornar;
+    //return new $class($dbConfig);
 });
 
 /**

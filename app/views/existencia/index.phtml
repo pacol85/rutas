@@ -20,7 +20,12 @@ echo $this->view->form;
 <table id="cxp" class="display" cellspacing="0" width="80%" >
 <thead><tr>
 	<th>C&oacute;digo Producto</th>
+	<th>Nombre</th>
+	<th>Bodega</th>
+	<th>Pasillo</th>
+	<th>Caja</th>
 	<th>C&oacute;digo Color</th>
+	<th>Nombre Color</th>
 	<th>Existencia</th>
 	<th>Modificacion</th>
 </tr></thead>
@@ -30,9 +35,16 @@ echo $this->view->form;
 	$hoy = restarDias(date("Y-m-d H:i:s"), 30);
 	$cxpList = CrColorXProducto::find("cp_creacion <= '$hoy'");
 	foreach ($cxpList as $cxp){
+		$pr = CrProductos::findFirst("pr_codigo = '$cxp->pr_codigo'");
+		$co = CrColores::findFirst("co_codigo = '$cxp->co_codigo'");
 		echo "<tr>";
 		echo "<td>$cxp->pr_codigo</td>";
+		echo "<td>$pr->pr_nombre</td>";
+		echo "<td>$pr->bodega</td>";
+		echo "<td>$pr->pasillo</td>";
+		echo "<td>$pr->caja</td>";
 		echo "<td>$cxp->co_codigo</td>";
+		echo "<td>$co->co_nombre</td>";
 		if($cxp->cp_existencia == 1){
 			echo "<td>Hay</td>";
 		}else{

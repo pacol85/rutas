@@ -1,22 +1,23 @@
-var counter = 0;
-var totals=[0,0,0,0,0];
+var totale=0;
+var totalc=0;
 $(document).ready(function() {
-	$(this).find('.number').each(function(){
-		if($(this).val() != null){
-			totals[counter]+=parseInt( $(this).html());
-		}       	
-       	counter++;
-       	if(counter == 5){
-       		counter = 0;
-       	}
+	$('*[id^="eb"]').change(function() {
+		var sum = 0;
+    	$('*[id^="eb"]').each(function() {
+	        sum += Number($(this).val());
+	    });
+    	totale = sum;
+    	$("#tefectivo").html(totale);
+    	$("#tglobal").html(totale + totalc);
     });
-	$("#tefectivo").each(function(){  
-    	$(this).html(totals[2]);
-    });
-    $("#tcheque").each(function(){  
-    	$(this).html(totals[3]);
-    });
-    $("#tglobal").each(function(){  
-    	$(this).html(totals[2]+ totals[3]);
-    });
+    
+    $('*[id^="c"]').change(function() {
+    	var sum = 0;
+    	$('*[id^="c"]').each(function() {
+	        sum += Number($(this).val());
+	    });
+    	totalc = sum;
+    	$("#tcheque").html(totalc);
+    	$("#tglobal").html(totale + totalc);
+	});
 });

@@ -32,10 +32,49 @@ class CrProductos extends \Phalcon\Mvc\Model
      * @var string
      */
     public $pr_creacion;
-    
+
+    /**
+     *
+     * @var string
+     */
+    public $bodega;
+
+    /**
+     *
+     * @var string
+     */
+    public $pasillo;
+
+    /**
+     *
+     * @var string
+     */
+    public $estilo;
+
+    /**
+     *
+     * @var string
+     */
+    public $caja;
+
+    /**
+     *
+     * @var string
+     */
+    public $fmod;
+
+    /**
+     *
+     * @var string
+     */
+    public $url;
+
+    /**
+     * Initialize method for model.
+     */
     public function initialize()
     {
-    	$this->hasMany("pr_codigo", "cr_colorxproducto", "pr_codigo");
+        $this->hasMany('pr_codigo', 'CrColorxproducto', 'pr_codigo', array('alias' => 'CrColorxproducto'));
     }
 
     /**
@@ -52,7 +91,7 @@ class CrProductos extends \Phalcon\Mvc\Model
      * Allows to query a set of records that match the specified conditions
      *
      * @param mixed $parameters
-     * @return CrProducto[]
+     * @return CrProductos[]
      */
     public static function find($parameters = null)
     {
@@ -63,7 +102,7 @@ class CrProductos extends \Phalcon\Mvc\Model
      * Allows to query the first record that match the specified conditions
      *
      * @param mixed $parameters
-     * @return CrProducto
+     * @return CrProductos
      */
     public static function findFirst($parameters = null)
     {

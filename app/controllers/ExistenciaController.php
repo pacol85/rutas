@@ -25,11 +25,17 @@ class ExistenciaController extends ControllerBase {
 					$objReader = PHPExcel_IOFactory::createReader($inputFileType);
 					$objPHPExcel = $objReader->load($file->getTempName());
 				} catch(Exception $e) {
-					die('Error loading file "'.$file->getTempName().'": '.$e->getMessage());
+					parent::msg('Error loading file "'.$file->getTempName().'": '.$e->getMessage());
+					//die('Error loading file "'.$file->getTempName().'": '.$e->getMessage());
 				}
-					
+				$errores = 0;	
 				//ExistenciaController.$this->tablaString =
-				ExistenciaController::tablaExistencia($objPHPExcel);
+				$errores = $this->tablaExistencia($objPHPExcel);
+				if($errores > 0){
+					parent::msg("Errores encontrados: $errores");
+				}else{
+					parent::msg("Subida de archivo sin errores", "s");
+				}
 			}
 		}/*
 		if($this->request->has("archivo")){
@@ -48,7 +54,7 @@ class ExistenciaController extends ControllerBase {
 			ExistenciaController::tablaExistencia($objPHPExcel);
 				
 		}*/else {
-			echo "No se selecciono ningun archivo";
+			parent::msg("No se selecciono ningun archivo");
 		}
 		/*
 		$user = new CrUsuario();
@@ -77,12 +83,14 @@ class ExistenciaController extends ControllerBase {
 			echo "No se ingresó la información completa";
 		}*/
 		
-		$this->view->enable();
-		
+		//$this->view->enable();
+		return parent::forward("existencia", "index");
 	}
 	
 	//Función tablaExistencia recibe la hoja a leer y el documento
 	function tablaExistencia($archivo){
+		//contador de errores
+		$error = 0;
 		//  Get worksheet dimensions
 		$sheets = $archivo->getAllSheets();
 		set_time_limit(300);
@@ -132,10 +140,13 @@ class ExistenciaController extends ControllerBase {
 								$nada = true;
 								break;
 							}*/
-							if($pos<4){
+							if($pos == 0 && ($columna == "" || $columna == null) ){
+								return $error;
+							}
+							if($pos<6){
 								$productos[$pos] = $columna;
 							}else{
-								$colores[$pos-4]= $columna;
+								$colores[$pos-6]= $columna;
 							}
 							$stringTabla += "<td>$columna</td>";
 							$pos++;
@@ -153,30 +164,56 @@ class ExistenciaController extends ControllerBase {
 							if( count($prods) < 1){
 								//Guardar producto
 								//echo "entro al count de productos ".count($prods);
-								$prod ->pr_codigo = $productos[0];
+								$prod->pr_codigo = $productos[0];
 								$prod->pr_nombre = $productos[1];
-								$prod->pr_ubicacion = $productos[2];
-								$prod->pr_existencia = $productos[3];
+								$prod->bodega = $productos[2];
+								$prod->pasillo = $productos[3];
+								$prod->caja = $productos[4];
+								$prod->pr_existencia = $productos[5];
 								$prod->pr_creacion = $fechaHoy;
-								$prod->save();
+								$prod->url = "http://controlruta.ml/rutas/img/$prod->pr_codigo.png";
+								if(!$prod->save()){
+									$error++;
+									parent::msg("Ocurri&oacute; error al cargar fila $fila, producto $prod->pr_nombre");
+								}
 							}else{
 								foreach ($prods as $prod2) {
 									$prod = $prod2;
+									//actualizando datos
+									$prod->pr_nombre = $productos[1];
+									$prod->bodega = $productos[2];
+									$prod->pasillo = $productos[3];
+									$prod->caja = $productos[4];
+									$prod->pr_existencia = $productos[5];
+									$prod->fmod = $fechaHoy;
+									$prod->url = "http://controlruta.ml/rutas/img/$prod->pr_codigo.png";
+									if(!$prod->update()){
+										$error++;
+										parent::msg("Ocurri&oacute; error al cargar fila $fila, producto $prod->pr_nombre");
+									}
 								}
 							}
 								
 							//comparar si existe el color
-							$cols = CrColores::find("co_codigo = '".$colores[0]."'");
+							$cols = CrColores::find("co_codigo like '".$colores[0]."'");
 							if( count($cols) < 1){
 								//Guardar Color
 								//echo "entro al count de cols ".count($cols);
 								$col->co_codigo = $colores[0];
 								$col->co_nombre = $colores[1];
 								$col->co_creacion = $fechaHoy;
-								$col->save();
+								if(!$col->save()){
+									$error++;
+									parent::msg("Ocurri&oacute; error al cargar fila $fila, color $col->co_nombre");
+								}
 							}else{
 								foreach ($cols as $col2) {
 									$col = $col2;
+									$col->co_nombre = $colores[1];
+									if(!$col->update()){
+										$error++;
+										parent::msg("Ocurri&oacute; error al cargar fila $fila, color $col->co_nombre");
+									}	
 								}
 							}
 								
@@ -186,7 +223,10 @@ class ExistenciaController extends ControllerBase {
 							$cxp->pr_codigo = $prod->pr_codigo;
 							$cxp->cp_existencia = $productos[3];
 							$cxp->cp_creacion = $fechaHoy;
-							$cxp->save();
+							if(!$cxp->save()){
+								$error++;
+								parent::msg("Ocurri&oacute; error al cargar fila $fila, uni&oacute;n de producto ($prod->pr_nombre) con color ($col->co_nombre)");
+							}
 						//}
 						
 					}
@@ -197,7 +237,7 @@ class ExistenciaController extends ControllerBase {
 			//$registry->tablaString = $stringTabla;
 			//print "</table>";
 		}
-		
+		return $error;
 	}
 	
 	function fechaExcel($xl_date)
@@ -216,4 +256,28 @@ class ExistenciaController extends ControllerBase {
 		return $fechaExcel;
 	}
 	
+	public function fotosAction(){
+		$head = ["C&oacute;digo", "Nombre", "Ubicaci&oacute;n","Existencia", "URL", "Acciones"];
+		$tabla = parent::thead("tfotos", $head);
+		$menu = Menu::find();
+		
+		foreach ($menu as $m){
+			$s = Seccion::findFirst("id = ".$m->seccion);
+			$disp = "S&iacute;";
+			if($m->disponible != 1){
+				$disp = "No";
+			}
+			$tabla = $tabla.parent::tbody([
+					$s->nombre,
+					$m->codigo,
+					$m->nombre,
+					$m->precio,
+					parent::a(1,"menu/disponible/$m->id", $disp),
+					parent::a(2, "cargarDatos('".$m->id."','".$m->seccion."','".$m->codigo.
+							"','".$m->nombre."','".$m->descripcion."','".$m->precio."');",
+							"Editar")." | ".
+					parent::a(1,"menu/eliminar/$m->id", "Eliminar")
+			]);
+		}
+	}
 }
