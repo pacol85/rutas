@@ -221,7 +221,7 @@ class ExistenciaController extends ControllerBase {
 							//Guardar relacion entre los dos
 							$cxp->co_codigo = $col->co_codigo;
 							$cxp->pr_codigo = $prod->pr_codigo;
-							$cxp->cp_existencia = $productos[3];
+							$cxp->cp_existencia = $productos[5];
 							$cxp->cp_creacion = $fechaHoy;
 							if(!$cxp->save()){
 								$error++;
